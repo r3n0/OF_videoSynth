@@ -1,0 +1,13 @@
+<group>
+	<countX>200</countX>
+	<stepX>4.4</stepX>
+	<twistX>3.3</twistX>
+<group/>
+<scale>0.561224, 2.09184</scale>
+<posY>-128</posY>
+<color>83, 189, 239, 102</color>
+<relleno>0</relleno>
+<tipo>1</tipo>
+<fondo>55, 24, 37, 255</fondo>
+<stroke>1</stroke>
+</group>
