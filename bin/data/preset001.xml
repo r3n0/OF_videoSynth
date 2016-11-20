@@ -1,13 +1,13 @@
 <group>
 	<countX>400</countX>
-	<stepX>2.9</stepX>
-	<twistX>-0.8</twistX>
+	<stepX>2.75</stepX>
+	<twistX>-2.4</twistX>
 <group/>
 <scale>3.50128, 3.07526</scale>
-<posY>-20</posY>
-<color>49, 191, 212, 40</color>
+<posY>-39.65</posY>
+<color>49, 171, 218, 9</color>
 <relleno>0</relleno>
 <tipo>0</tipo>
 <fondo>16, 32, 42, 255</fondo>
-<stroke>3</stroke>
+<stroke>10</stroke>
 </group>

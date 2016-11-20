@@ -6,19 +6,21 @@ void ofApp::setup(){
     ofSetWindowShape(1280, 720);
     //ofSetFullscreen(true);
     ofSetFrameRate(60);
+    showGui = false;
 
     gui.setup("Parameters", "settings.xml");
     gui.add(countX.setup("countX", 50, 0, 400));
     gui.add(stepX.setup("stepX", 20, 0, 10));
+    gui.add(stroke.setup("stroke", 2, 0, 10));
     gui.add(twistX.setup("twistX", 5, -10, 10));
-    gui.add(stroke.setup("stroke", 2, 0, 5));
+    gui.add(posY.setup("posY", 10, -200, 200));
+
     gui.add(scale.setup(
                 "scale",
                 ofVec2f(2,2),
                 ofVec2f(0,0),
                 ofVec2f(10,10)
                 ));
-    gui.add(posY.setup("posY", 10, -200, 200));
     gui.add(colorinche.setup(
                 "color",
                 ofColor::black,
@@ -63,7 +65,7 @@ void ofApp::draw(){
     stripePattern();
     //-----
     ofPopMatrix();
-    gui.draw();
+    if(showGui) gui.draw();
 }
 
 //--------------------------------------------------------------
@@ -88,8 +90,25 @@ void ofApp::stripePattern(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    if(key == 'g'){
+        showGui = !showGui;
+    }
+    if( key == OF_KEY_RETURN){
+        ofSaveScreen ("captura" + ofToString(ofRandom(0,1000), 0) + ".png");
+    }
+    if( key == 's'){
+        ofFileDialogResult res;
+        res = ofSystemSaveDialog("preset_.xml", "Guardando Preset");
+        if (res.bSuccess) gui.saveToFile(res.filePath);
+    }
+    if (key == 'l'){
+        ofFileDialogResult res;
+        res = ofSystemLoadDialog("Cargando Preset");
+        if (res.bSuccess) gui.loadFromFile(res.filePath);
+    }
 
 }
+
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
