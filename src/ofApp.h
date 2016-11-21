@@ -10,14 +10,34 @@ public:
     void update();
     void draw();
     void stripePattern();
+    void draw2d();
 
     ofxPanel gui;
-    ofxIntSlider countX, stroke;
-    ofxFloatSlider stepX, twistX, posY;
+    ofxIntSlider
+                countX,
+                stroke,
+                imageAlpha,
+                videoAlpha,
+                ksectors;
+    ofxFloatSlider
+                    stepX,
+                    twistX,
+                    posY,
+                    kangle,
+                    kx,
+                    ky;
     ofxVec2Slider size;
     ofxVec2Slider scale;
     ofxColorSlider colorinche, fondo;
-    ofxToggle relleno, typo;
+    ofxToggle relleno, typo, kenabled;
+    ofxGuiGroup mixer, kaleidos;
+
+
+    ofTexture image;
+    ofVideoPlayer videito;
+    ofFbo fbo;
+    ofShader shader;
+
 
     bool showGui;
 

@@ -3,18 +3,23 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetWindowTitle("Video Synth");
-    ofSetWindowShape(1280, 720);
+    ofSetWindowShape(800, 800);
     //ofSetFullscreen(true);
     ofSetFrameRate(60);
     showGui = false;
+    ofLoadImage (image, "mandala.jpg");
+    videito.load("esfera2.mp4");
+    videito.play();
+    fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+    shader.load("kaleido");
+
 
     gui.setup("Parameters", "settings.xml");
     gui.add(countX.setup("countX", 50, 0, 400));
-    gui.add(stepX.setup("stepX", 20, 0, 10));
+    gui.add(stepX.setup("stepX", 2, 0, 5));
     gui.add(stroke.setup("stroke", 2, 0, 10));
-    gui.add(twistX.setup("twistX", 5, -10, 10));
+    gui.add(twistX.setup("twistX", 5, -3, 3));
     gui.add(posY.setup("posY", 10, -200, 200));
-
     gui.add(scale.setup(
                 "scale",
                 ofVec2f(2,2),
@@ -35,37 +40,76 @@ void ofApp::setup(){
                 ofColor(0,0,0),
                 ofColor::white
                 ));
+
+    mixer.setup("Mixer");
+    mixer.setHeaderBackgroundColor(ofColor::red);
+    mixer.setBorderColor(ofColor::darkRed);
+    mixer.add(imageAlpha.setup("image", 50, 0, 255));
+    mixer.add(videoAlpha.setup("video", 50, 0, 255));
+
+    kaleidos.setup("kaleidoscopio");
+    kaleidos.setHeaderBackgroundColor(ofColor::blue);
+    kaleidos.setBorderColor(ofColor::darkBlue);
+    kaleidos.add(kenabled.setup("enabled", true));
+    kaleidos.add(ksectors.setup("Sectores", 10, 0, 100));
+    kaleidos.add(kangle.setup("Angulo", 10, -180, 180));
+    kaleidos.add(kx.setup("X", 0.5, 0, 1));
+    kaleidos.add(ky.setup("Y", 0.5, 0, 1));
+
+
+    //gui.minimizeAll();
+    gui.add(&mixer);
+    gui.add(&kaleidos);
     gui.loadFromFile("settings.xml");
 
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    videito.update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofBackground(fondo);
 
+    fbo.begin();
+    draw2d();
+    fbo.end();
+
+
+    if(kenabled){
+        shader.begin();
+        shader.setUniform1i( "ksectors", ksectors);
+        shader.setUniform1f( "kangleRad", ofDegToRad(kangle) );
+        shader.setUniform2f( "kcenter", kx*ofGetWidth(),
+                             ky*ofGetHeight() );
+        shader.setUniform2f( "screenCenter", 0.5*ofGetWidth(),
+                             0.5*ofGetHeight() );
+    }
+    ofSetColor(255);
+    fbo.draw(0, 0, ofGetWidth(), ofGetHeight());
+
+    if ( kenabled ) shader.end();
+
+    if(showGui) gui.draw();
+}
+
+void ofApp::draw2d(){
+    ofBackground(fondo);
+    ofDisableSmoothing();//<---- esto de be ir aquí porque no funciona conjuntamente con el de abajo
+    ofEnableBlendMode(OF_BLENDMODE_ADD);//iniciar el modo de fusión
+    ofSetColor(255, imageAlpha);
+    image.draw(0, 0, ofGetWidth(), ofGetHeight());
+    ofSetColor(255, videoAlpha);
+    videito.draw(0, 0, ofGetWidth(), ofGetHeight());
+    ofEnableAlphaBlending();
+    ofEnableSmoothing(); //<---- y aquí se activa de nuevo
     ofPushMatrix();
-    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
     //-----
-    /*
-    ofSetColor(ofColor::black);
-    ofSetLineWidth(5);
-    ofDrawLine(-200,-100,-200,0);
-    ofDrawRectangle(-100, -100,100,100);
-    ofDrawTriangle(100,-100,0,0,200,0);
-    ofDrawCircle(250, -50, 50);
-    ofSetCircleResolution(40);
-    ofNoFill();
-    ofDrawCircle(350, -50, 50);
-    */
+    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
     stripePattern();
     //-----
     ofPopMatrix();
-    if(showGui) gui.draw();
 }
 
 //--------------------------------------------------------------
@@ -106,7 +150,6 @@ void ofApp::keyPressed(int key){
         res = ofSystemLoadDialog("Cargando Preset");
         if (res.bSuccess) gui.loadFromFile(res.filePath);
     }
-
 }
 
 
