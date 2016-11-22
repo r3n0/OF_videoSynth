@@ -18,6 +18,7 @@ public:
                 stroke,
                 imageAlpha,
                 videoAlpha,
+                cameraAlpha,
                 ksectors;
     ofxFloatSlider
                     stepX,
@@ -37,6 +38,7 @@ public:
     ofVideoPlayer videito;
     ofFbo fbo;
     ofShader shader;
+    ofVideoGrabber camera;
 
 
     bool showGui;

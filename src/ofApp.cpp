@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetWindowTitle("Video Synth");
-    ofSetWindowShape(800, 800);
+    ofSetWindowShape(1200, 800);
     //ofSetFullscreen(true);
     ofSetFrameRate(60);
     showGui = false;
@@ -46,6 +46,7 @@ void ofApp::setup(){
     mixer.setBorderColor(ofColor::darkRed);
     mixer.add(imageAlpha.setup("image", 50, 0, 255));
     mixer.add(videoAlpha.setup("video", 50, 0, 255));
+    mixer.add(cameraAlpha.setup("camera", 50, 0, 255));
 
     kaleidos.setup("kaleidoscopio");
     kaleidos.setHeaderBackgroundColor(ofColor::blue);
@@ -67,6 +68,7 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     videito.update();
+    if ( camera.isInitialized() ) camera.update();
 }
 
 //--------------------------------------------------------------
@@ -102,6 +104,10 @@ void ofApp::draw2d(){
     image.draw(0, 0, ofGetWidth(), ofGetHeight());
     ofSetColor(255, videoAlpha);
     videito.draw(0, 0, ofGetWidth(), ofGetHeight());
+    if ( camera.isInitialized() ) {
+        ofSetColor( 255, cameraAlpha );
+        camera.draw( 0, 0, ofGetWidth(), ofGetHeight() );
+    }
     ofEnableAlphaBlending();
     ofEnableSmoothing(); //<---- y aquí se activa de nuevo
     ofPushMatrix();
@@ -149,6 +155,11 @@ void ofApp::keyPressed(int key){
         ofFileDialogResult res;
         res = ofSystemLoadDialog("Cargando Preset");
         if (res.bSuccess) gui.loadFromFile(res.filePath);
+    }
+    if ( key == 'c' ) {
+        camera.setDeviceID( 2 );
+        camera.setDesiredFrameRate( 30 );
+        camera.initGrabber( 1280, 720 );
     }
 }
 
